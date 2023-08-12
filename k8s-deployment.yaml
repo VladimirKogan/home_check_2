@@ -1,0 +1,38 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: dotnetcore-deployment
+  namespace: devops
+  labels:
+    app: dotnetcore
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: dotnetcore
+  template:
+    metadata:
+      labels:
+        app: dotnetcore
+    spec:
+      containers:
+      - name: dotnetcore
+        image: vladimirkogan/dotnet-simple:latest
+        ports:
+        - containerPort: 80
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: dotnetcore-service
+  namespace: devops
+spec:
+  selector:
+    app: dotnetcore
+  ports:
+    - name : app-listener
+      protocol: TCP
+      port: 80
+      targetPort: 80
+      nodePort: 30009
+  type: LoadBalancer
